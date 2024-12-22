@@ -29,6 +29,10 @@ import user from '../model/user';
 import {
     Handler, param, post, Type, Types,
 } from '../service/server';
+import { cose } from '@simplewebauthn/server/helpers';
+import axios from 'axios';
+import { log } from 'console';
+import { logger } from '../logger';
 
 export class ContestListHandler extends Handler {
     @param('rule', Types.Range(contest.RULES), true)
@@ -135,6 +139,15 @@ export class ContestDetailBaseHandler extends Handler {
     }
 }
 
+interface PurchaseRequest {
+    user_id: string;
+    item_id: string;
+}
+
+interface PurchaseResponse {
+    has_purchased: boolean;
+}
+
 export class ContestDetailHandler extends ContestDetailBaseHandler {
     @param('tid', Types.ObjectId)
     async prepare(domainId: string, tid: ObjectId) {
@@ -158,14 +171,30 @@ export class ContestDetailHandler extends ContestDetailBaseHandler {
             .replace(/="file:\/\//g, `="./${this.tdoc.docId}/file/`);
     }
 
+    // TODO: 参赛接口
     @param('tid', Types.ObjectId)
     @param('code', Types.String, true)
     async postAttend(domainId: string, tid: ObjectId, code = '') {
         this.checkPerm(PERM.PERM_ATTEND_CONTEST);
         if (contest.isDone(this.tdoc)) throw new ContestNotLiveError(tid);
         if (this.tdoc._code && code !== this.tdoc._code) throw new InvalidTokenError('Contest Invitation', code);
-        await contest.attend(domainId, tid, this.user._id, { subscribe: 1 });
-        this.back();
+        const user_id = this.user._id.toString();
+        const item_id = tid.toString();
+        const requestBody: PurchaseRequest = {
+            user_id,
+            item_id,
+        };
+        const responsePurchase = await axios.post<PurchaseResponse>("http://localhost:18080/check-purchase", requestBody);
+        logger.debug(responsePurchase.data.has_purchased);
+        if (responsePurchase.data.has_purchased === false) {
+            logger.debug(tid.toString());
+            this.response.redirect = `/pay/${item_id}`;
+        } else {
+            await contest.attend(domainId, tid, this.user._id, { subscribe: 1 });
+            this.response.redirect = `/contest/${item_id}`;
+        }
+        // await contest.attend(domainId, tid, this.user._id, { subscribe: 1 });
+        // this.back();
     }
 
     @param('tid', Types.ObjectId)
@@ -291,11 +320,13 @@ export class ContestEditHandler extends Handler {
     @param('contestDuration', Types.Float, true)
     @param('maintainer', Types.NumericArray, true)
     @param('allowViewCode', Types.Boolean)
+    @param('price', Types.Float)
     async postUpdate(
         domainId: string, tid: ObjectId, beginAtDate: string, beginAtTime: string, duration: number,
         title: string, content: string, rule: string, _pids: string, rated = false,
         _code = '', autoHide = false, assign: string[] = [], lock: number = null,
         contestDuration: number = null, maintainer: number[] = [], allowViewCode = false,
+        price = 0,
     ) {
         if (autoHide) this.checkPerm(PERM.PERM_EDIT_PROBLEM);
         const pids = _pids.replace(/，/g, ',').split(',').map((i) => +i).filter((i) => i);
@@ -339,6 +370,7 @@ export class ContestEditHandler extends Handler {
         await contest.edit(domainId, tid, {
             assign, _code, autoHide, lockAt, maintainer, allowViewCode,
         });
+
         this.response.body = { tid };
         this.response.redirect = this.url('contest_detail', { tid });
     }
