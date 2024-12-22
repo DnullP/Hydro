@@ -789,6 +789,7 @@ export interface ModuleInterfaces {
     hash: (password: string, salt: string, user: User) => boolean | string | Promise<string>;
 }
 
+// TODO: 全局变量接口
 export interface HydroGlobal {
     version: Record<string, string>;
     model: Model;

@@ -70,6 +70,7 @@ async function callback({ state, code }) {
     return ret;
 }
 
+// TODO: github-log实现模块的例子
 export function apply(ctx: Context) {
     ctx.provideModule('oauth', 'github', {
         text: 'Login with Github',

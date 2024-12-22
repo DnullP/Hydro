@@ -35,6 +35,7 @@ import {
     Handler, param, post, query, route, Types,
 } from '../service/server';
 import { ContestDetailBaseHandler } from './contest';
+import { handler } from '../entry/common';
 
 export const parseCategory = (value: string) => value.replace(/，/g, ',').split(',').map((e) => e.trim());
 
@@ -273,6 +274,7 @@ export class ProblemRandomHandler extends Handler {
 }
 
 export class ProblemDetailHandler extends ContestDetailBaseHandler {
+    // TODO: 此处有获取问题内容, 用户内容, 问题状态的接口
     pdoc: ProblemDoc;
     udoc: User;
     psdoc: ProblemStatusDoc;
@@ -320,6 +322,7 @@ export class ProblemDetailHandler extends ContestDetailBaseHandler {
             this.pdoc.config.langs = ['objective', 'submit_answer'].includes(this.pdoc.config.type) ? ['_'] : intersection(baseLangs, ...t);
         }
         await this.ctx.parallel('problem/get', this.pdoc, this);
+        // TODO: user
         [this.psdoc, this.udoc] = await Promise.all([
             problem.getStatus(domainId, this.pdoc.docId, this.user._id),
             user.getById(domainId, this.pdoc.owner),

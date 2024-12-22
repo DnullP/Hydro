@@ -18,6 +18,7 @@ function addScript<K>(name: string, description: string, validate: Schema<K>, ru
 }
 
 function provideModule<T extends keyof ModuleInterfaces>(type: T, id: string, module: ModuleInterfaces[T]) {
+    // TODO: Hydro全局模块注册
     if (global.Hydro.module[type][id]) throw new Error(`duplicate script ${type}/${id} registered.`);
     global.Hydro.module[type as any][id] = module;
     return () => delete global.Hydro.module[type][id];

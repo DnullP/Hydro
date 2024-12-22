@@ -138,6 +138,7 @@ export class HandlerCommon {
         throw new Error('checkPriv was not implemented');
     }
 
+    // TODO: url函数
     url(name: string, ...kwargsList: Record<string, any>[]) {
         if (name === '#') return '#';
         let res = '#';
@@ -167,6 +168,7 @@ export class HandlerCommon {
         return str;
     }
 
+    // TODO: renderHTML函数
     renderHTML(templateName: string, args: Record<string, any>) {
         const type = templateName.split('.')[1];
         const engine = this.ctx.server.renderers[type] || (() => JSON.stringify(args, serializer(false, this)));
