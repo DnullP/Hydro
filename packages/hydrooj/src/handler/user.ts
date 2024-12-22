@@ -26,6 +26,7 @@ import user, { deleteUserCache } from '../model/user';
 import {
     Handler, param, post, Types,
 } from '../service/server';
+import DomainModel from '../model/domain';
 
 class UserLoginHandler extends Handler {
     noCheckPermView = true;
@@ -274,6 +275,7 @@ class UserRegisterWithCodeHandler extends Handler {
         if (password !== verify) throw new VerifyPasswordError();
         if (this.tdoc.phone) this.tdoc.mail = `${String.random(12)}@hydro.local`;
         const uid = await user.create(this.tdoc.mail, uname, password, undefined, this.request.ip);
+        domain.setUserRole('system', uid, 'default');
         await token.del(code, token.TYPE_REGISTRATION);
         const [id, mailDomain] = this.tdoc.mail.split('@');
         const $set: any = this.tdoc.set || {};

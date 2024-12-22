@@ -1,0 +1,82 @@
+{% extends "layout/basic.html" %}
+{% import "components/paginator.html" as paginator with context %}
+{% import "components/nothing.html" as nothing with context %}
+{% block content %}
+  <div class="row">
+    <div class="medium-12 columns">
+      <div class="section">
+        <div class="section__body no-padding">
+          <div data-fragment-id="ranking">
+            {% if not udocs.length %}
+              <blockquote class="note">{{ _('The ranking page is not updated realtime.') }}</blockquote>
+              {{ nothing.render('Sorry, there are no users in this domain.') }}
+            {% else %}
+              <table class="data-table">
+                <colgroup>
+                  <col class="col--rank">
+                  <col class="col--user">
+                  <col class="col--ac">
+                  <col class="col--bio">
+                  <!-- 新增两列 -->
+                  <col class="col--ban">
+                  <col class="col--reset">
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th class="col--rank">{{ _('uid') }}</th>
+                    <th class="col--user">{{ _('Username') }}</th>
+                    <th class="col--ac">{{ _('Accept') }}</th>
+                    <th class="col--bio">{{ _('Bio') }}</th>
+                    <!-- 新增两列 -->
+                    <th class="col--ban">{{ _('Ban') }}</th>
+                    <th class="col--reset">{{ _('Reset') }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% if handler
+                    .user
+                    .hasPriv(PRIV.PRIV_USER_PROFILE) %}
+                    <tr>
+                      <td class="col--rank">{{ handler.user.rank|default('-') }}</td>
+                      <td class="col--user">{{ user.render_inline(handler.user) }}</td>
+                      <td class="col--ac">{{ handler.user.nAccept|default(0) }}</td>
+                      <td class="col--bio">
+                        {{ handler.user.bio|default('')|truncate(64, true)|markdownInline|safe }}
+                      </td>
+                      <!-- 这里为handler.user添加Ban、Reset按钮 -->
+                      <td class="col--ban">
+                        <a class="button" href="/user_ban/{{ handler.user._id|default('') }}">Ban</a>
+                      </td>
+                      <td class="col--reset">
+                        <a class="button" href="/user_reset/{{ handler.user._id|default('') }}">Reset</a>
+                      </td>
+                    </tr>
+                  {% endif %}
+                  {%- for udoc in udocs -%}
+                    <tr>
+                      <td class="col--rank">{{ udoc._id }}</td>
+                      <td class="col--user">{{ user.render_inline(udoc) }}</td>
+                      <td class="col--ac">{{ udoc.nAccept|default(0) }}</td>
+                      <td class="col--bio">
+                        {{ udoc.bio|default('')|truncate(64, true)|markdownInline|safe }}
+                      </td>
+                      <!-- 这里为每个udoc添加Ban、Reset按钮 -->
+                      <td class="col--ban">
+                        <a class="button" href="/user_ban/{{ udoc._id }}">Ban</a>
+                      </td>
+                      <td class="col--reset">
+                        <a class="button" href="/user_reset/{{ udoc._id }}">Reset</a>
+                      </td>
+                    </tr>
+                  {%- endfor -%}
+                </tbody>
+              </table>
+
+              {{ paginator.render(page, upcount) }}
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
