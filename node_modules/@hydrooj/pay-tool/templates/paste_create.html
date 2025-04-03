@@ -1,0 +1,26 @@
+{% extends "layout/basic.html" %}
+{% import "components/user.html" as user with context %}
+{% import "components/contest.html" as contest with context %}
+{% block content %}
+  <div class="section">
+    {% if not user.hasPaid %}
+      <div class="pay-info">
+        <p>您需要支付 <strong>{{ price }}元</strong> 来访问此内容。</p>
+        <form action="{{ url('contest_detail', tid) }}" method="POST">
+        <input type="hidden" name="operation" value="attend">
+        <button class="menu__link" {% if false %}data-contest-code{% endif %} type="submit">
+          <span class="icon icon-add"></span> {{ _('已完成支付') }}
+        </button>
+      </form>
+      </div>
+    {% else %}
+      <div class="paid-content">
+        <h2>欢迎！您已成功支付。</h2>
+        <p>以下是您购买的内容：</p>
+        <div class="premium-content">
+          <p>{{ premiumContent }}</p>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+{% endblock %}
