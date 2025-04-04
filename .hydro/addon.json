@@ -6,5 +6,6 @@
   "@hydrooj/add-from-loj",
   "@hydrooj/user-manage",
   "@hydrooj/fps-importer",
-  "@hydrooj/import-hoj"
+  "@hydrooj/import-hoj",
+  "@hydrooj/hydroac-client"
 ]
