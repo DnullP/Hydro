@@ -1,4 +1,4 @@
-name: Build and Push Image
+name: Hydro build
 
 on:
   workflow_dispatch:
