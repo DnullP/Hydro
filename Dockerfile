@@ -5,6 +5,4 @@ WORKDIR /app
 
 COPY . /app
 
-RUN npm i
-
 # Run app
