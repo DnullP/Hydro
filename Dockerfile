@@ -6,3 +6,4 @@ WORKDIR /app
 COPY . /app
 
 # Run app
+CMD ["node", "/app/node_modules/hydrooj/bin/hydrooj.js"]
