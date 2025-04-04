@@ -4,9 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       name:
-        description: 'Name'
+        description: 'judge'
         required: true
-        default: 'World'
+        default: 'New Build'
 
 jobs:
   judge-build:
@@ -39,49 +39,6 @@ jobs:
       - name: Build Docker Image
         run: |
           docker build -t ${{ secrets.HW_CR }}/${REPO}:${{ github.sha }} -f judge/Dockerfile ./judge
- 
-      # 推送 Docker 镜像
-      - name: Push Docker Image
-        run: |
-          docker push ${{ secrets.HW_CR }}/${REPO}:${{ github.sha }}
-
-      # 可选：推送带有最新标签的镜像
-      - name: Push Docker Image with latest tag
-        if: github.ref == 'refs/heads/main'
-        run: |
-          docker tag ${{ secrets.HW_CR }}/${REPO}:${{ github.sha }} ${{ secrets.HW_CR }}/${REPO}:latest
-          docker push ${{ secrets.HW_CR }}/${REPO}:latest
-
-  hydro-build:
-    runs-on: ubuntu-latest
-
-    permissions:
-      contents: read
-      packages: write
-      id-token: write
-
-    steps:
-      # 检出代码
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      # 登录到 GitHub Container Registry
-      - name: Login to Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ secrets.HW_CR }}
-          username: ${{ secrets.HW_USER }}
-          password: ${{ secrets.HW_PASSWD }}
-
-      # 命名小写
-      - name: downcase REPO
-        run: |
-          echo "REPO=${GITHUB_REPOSITORY,,}" >>${GITHUB_ENV}
-
-      # 构建 Docker 镜像
-      - name: Build Docker Image
-        run: |
-          docker build -t ${{ secrets.HW_CR }}/${REPO}:${{ github.sha }} -f Dockerfile .
  
       # 推送 Docker 镜像
       - name: Push Docker Image
