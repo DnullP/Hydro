@@ -4,6 +4,7 @@ FROM node:18
 WORKDIR /app
 
 COPY . /app
+RUN mv /app/.hydro ~
 
 # Run app
 CMD ["node", "/app/node_modules/hydrooj/bin/hydrooj.js"]

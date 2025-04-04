@@ -1,0 +1,10 @@
+[
+  "@hydrooj/ui-default",
+  "@hydrooj/pay-tool",
+  "@hydrooj/hydrojudge",
+  "@hydrooj/blog",
+  "@hydrooj/add-from-loj",
+  "@hydrooj/user-manage",
+  "@hydrooj/fps-importer",
+  "@hydrooj/import-hoj"
+]
