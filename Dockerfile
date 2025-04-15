@@ -4,7 +4,7 @@ FROM node:18
 WORKDIR /app
 
 COPY . /app
-RUN mv /app/.hydro ~ && chmod 777 loj_download.sh && npm i && cd loj_download && npm i
+RUN mv /app/.hydro ~ && chmod 777 loj_download.sh && npm i && cd /app/loj_download && npm i
 
 # Run app
 CMD ["node", "/app/node_modules/hydrooj/bin/hydrooj.js", "--port=8888", "--host=0.0.0.0"]
