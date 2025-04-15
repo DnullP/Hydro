@@ -14,6 +14,7 @@ const report2 = create('Problem', 'red');
 
 proxy(superagent);
 const p = process.env.https_proxy || process.env.http_proxy || process.env.all_proxy || '';
+console.log("Proxy URL:", p);
 const queue = new Queue({ concurrency: 5 });
 
 const ScoreTypeMap = {
@@ -288,11 +289,11 @@ ${section.text}
                 const filepath = type + '/' + name;
                 if (fs.existsSync('downloads/' + host + '/' + pid + '/' + filepath)) {
                     const size = fs.statSync('downloads/' + host + '/' + pid + '/' + filepath).size;
-                                        if (size === expectedSize) {
+                    if (size === expectedSize) {
                         downloadedSize += size;
                         downloadedCount++;
                         return;
-                    }else console.log(filepath,size,expectedSize);
+                    } else console.log(filepath, size, expectedSize);
                 }
                 await downloadFile(url, write(filepath));
                 downloadedSize += expectedSize;
