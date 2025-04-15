@@ -5,7 +5,6 @@
     "@hydrooj/hydrojudge": "^3.4.4",
     "@hydrooj/import-hoj": "^0.0.5",
     "@hydrooj/ui-default": "^4.57.0",
-    "@hydrooj/user-manage": "^4.57.0",
     "hydrooj": "^4.19.1"
   }
 }
