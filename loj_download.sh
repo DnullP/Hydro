@@ -1,4 +1,4 @@
-node loj-download/bin/loj-download.js https://loj.ac/p/$1
+timeout 10s node loj-download/bin/loj-download.js "https://loj.ac/p/$1"
 
 zip -r loj-download/downloads/compressed_p/$1 loj-download/downloads/loj.ac/$1
 
