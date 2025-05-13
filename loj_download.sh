@@ -1,5 +1,5 @@
-export http_proxy=http://172.17.0.1:7890
-export https_proxy=http://172.17.0.1:7890
+# export http_proxy=http://172.17.0.1:7890
+# export https_proxy=http://172.17.0.1:7890
 
 timeout 20s node loj-download/bin/loj-download.js "https://loj.ac/p/$1"
 
